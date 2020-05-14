@@ -13,7 +13,17 @@
   </head>
   <body>
     <h1>Simple Whiteboard</h1>
-      <div>
+    <label for="colorOpts">Choose Color</label>
+    <select id="opts">
+      <option class="colorOptions" value="black" style="background:black;" id="black" >Black</option>  
+      <option class="colorOptions" value="green" style="background:green;" id="green" >Green</option>
+      <option class="colorOptions" value="blue" style="background:blue;" id="blue" >Blue</option>
+      <option class="colorOptions" value="red" style="background:red;" id="red" >Red</option>
+      <option class="colorOptions" value="yellow" style="background:yellow;" id="yellow" >Yellow</option>
+      <option class="colorOptions" value="orange" style="background:orange;" id="orange" >Orange</option>
+    </select>
+
+    <div>
           <canvas id="whiteboard" width="880" height="820"></canvas>
        </div>
       

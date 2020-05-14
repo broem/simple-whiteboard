@@ -22,7 +22,8 @@ var cursor = {
     e: {},
     offsetLeft: 0,
 	offsetTop: 0,
-	needsDraw: false
+	needsDraw: false,
+	color: 'black'
 };
 
 app.use(morgan('dev'));
@@ -62,6 +63,7 @@ io.on('connection', (socket) => {
 	// socket.emit('state', boardState);
 
 	socket.on('cursorMove', (inc) => {
+			cursor.color = inc.color;
 			cursor.direction = inc.direction
 		if (inc.direction === 'down') {
 			cursor.prevX = inc.prevX;
