@@ -99,7 +99,7 @@ io.on('connection', (socket) => {
 
 setInterval(() => {
 	io.sockets.emit('cursor', cursor);
-  }, 1000 / 70);
+  }, 1000 / 99);
 
 setInterval(() => {
 	io.sockets.emit('state', boardState);
