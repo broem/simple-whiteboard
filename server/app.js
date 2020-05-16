@@ -8,6 +8,10 @@ const http = require('http');
 const server = http.createServer(app);
 const io = require('socket.io')(server);
 
+const { createCanvas } = require('canvas')
+const canvas = createCanvas(480, 420)
+const ctx = canvas.getContext('2d')
+
 const boardState = {
 	users: {	}
 }
@@ -55,17 +59,19 @@ io.on('connection', (socket) => {
 	console.log('a user connected:', socket.id);
 
 	socket.on('newUser', () => {
+	
 		boardState.users[socket.id] = {
 		}
 		console.log(boardState.users)
-		
+		// socket.emit('init', canvas.);
+
 	})
-	// socket.emit('state', boardState);
 
 	socket.on('cursorMove', (inc) => {
 			cursor.color = inc.color;
 			cursor.direction = inc.direction
 		if (inc.direction === 'down') {
+			console.log(cursor)
 			cursor.prevX = inc.prevX;
 			cursor.prevY = inc.prevY;
 			cursor.currX = inc.currX;
@@ -81,11 +87,11 @@ io.on('connection', (socket) => {
 		if (inc.direction === 'move') {
 			if (cursor.flag) {
 				cursor.needsDraw = true;
-				// console.log(cursor)
 				cursor.prevX = inc.prevX;
 				cursor.prevY = inc.prevY;
 				cursor.currX = inc.currX;
 				cursor.currY = inc.currY;
+				draw();
 			}
 		}
 	});
@@ -97,13 +103,16 @@ io.on('connection', (socket) => {
 	});
 });
 
-setInterval(() => {
+const draw = () => {
+    ctx.beginPath();
+    ctx.moveTo(cursor.prevX, cursor.prevY);
+    ctx.lineTo(cursor.currX, cursor.currY);
+    ctx.strokeStyle = cursor.color;
+    ctx.lineWidth = 5;
+    ctx.stroke();
+	ctx.closePath();
 	io.sockets.emit('cursor', cursor);
-  }, 1000 / 99);
-
-setInterval(() => {
-	io.sockets.emit('state', boardState);
-  }, 1000 / 20);
+}
 
 server.listen(PORT, () => {
 	console.log('Server is live on PORT:', PORT);
