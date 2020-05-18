@@ -25,6 +25,12 @@ socket.emit('newUser');
 socket.on('init', (canv) => {
     // basically we want to draw whats in the server
     // probably collect the servers dataurl and write it to screen
+    var img = new Image;
+    img.src = canv;
+    img.onload = function() {
+        ctx.drawImage(img, 0, 0);
+    }
+    img.src = canv;
 
 })
 

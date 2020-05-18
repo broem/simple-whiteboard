@@ -63,7 +63,7 @@ io.on('connection', (socket) => {
 		boardState.users[socket.id] = {
 		}
 		console.log(boardState.users)
-		// socket.emit('init', canvas.);
+		socket.emit('init', canvas.toDataURL());
 
 	})
 
