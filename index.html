@@ -12,6 +12,8 @@
       </style>
   </head>
   <body>
+    <div class="header">
+
     <h1>Simple Whiteboard</h1>
     <label for="colorOpts">Choose Color</label>
     <select id="opts">
@@ -21,10 +23,12 @@
       <option class="colorOptions" value="red" style="background:red;" id="red" >Red</option>
       <option class="colorOptions" value="yellow" style="background:yellow;" id="yellow" >Yellow</option>
       <option class="colorOptions" value="orange" style="background:orange;" id="orange" >Orange</option>
+      <option class="colorOptions" value="eraser" style="background:whitesmoke;" id="eraser" >Eraser</option>
     </select>
-
-    <div>
-          <canvas id="whiteboard" width="480" height="420"></canvas>
+      
+  </div>
+    <div class="main">
+          <canvas id="whiteboard" width="680" height="620"></canvas>
        </div>
       
   </body>

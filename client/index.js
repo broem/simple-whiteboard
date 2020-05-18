@@ -24,6 +24,8 @@ socket.emit('newUser');
 
 socket.on('init', (canv) => {
     // basically we want to draw whats in the server
+    // probably collect the servers dataurl and write it to screen
+
 })
 
 const draw = (curs) => {
@@ -62,8 +64,8 @@ function cursorColor(obj) {
         case "black":
             cursor.color = "black";
             break;
-        case "white":
-            cursor.color = "white";
+        case "eraser":
+            cursor.color = "whitesmoke";
             break;
     }
 }

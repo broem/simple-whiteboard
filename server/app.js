@@ -9,7 +9,7 @@ const server = http.createServer(app);
 const io = require('socket.io')(server);
 
 const { createCanvas } = require('canvas')
-const canvas = createCanvas(480, 420)
+const canvas = createCanvas(680, 620)
 const ctx = canvas.getContext('2d')
 
 const boardState = {
@@ -71,7 +71,6 @@ io.on('connection', (socket) => {
 			cursor.color = inc.color;
 			cursor.direction = inc.direction
 		if (inc.direction === 'down') {
-			console.log(cursor)
 			cursor.prevX = inc.prevX;
 			cursor.prevY = inc.prevY;
 			cursor.currX = inc.currX;
@@ -80,7 +79,6 @@ io.on('connection', (socket) => {
 			cursor.flag = true;
 		}
 		if (inc.direction === 'up' ) {
-			// console.log(cursor)
 			cursor.flag = false;
 			cursor.needsDraw = false;
 		}

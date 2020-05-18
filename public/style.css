@@ -1,10 +1,25 @@
 body {
   font-family: arial,sans-serif;
+  background-color: #4f545c;
+}
+
+.header {
+  background-color: #2f3136;
+    color: white;
+    padding-left: 25px;
+    padding-top: 15px;
+    padding-bottom: 10px;
+}
+
+.main {
+  background-color: #4f545c;
 }
 
 #whiteboard {
   background: whitesmoke; 
   display: block; 
   margin: 0 auto;
+  margin-top: 25px;
   border: 1px solid black;
+  border-radius: 2%;
 }
