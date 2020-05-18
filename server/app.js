@@ -94,6 +94,11 @@ io.on('connection', (socket) => {
 		}
 	});
 
+	socket.on("clearBoard", () => {
+		ctx.clearRect(0, 0, 680, 620);
+		socket.emit("boardCleared")
+	});
+
 
 	socket.on('disconnect', function () {
 		delete boardState.users[socket.id]

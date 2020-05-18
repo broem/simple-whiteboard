@@ -44,6 +44,14 @@ const draw = (curs) => {
     ctx.closePath();
 }
 
+function clearBoard() {
+    socket.emit('clearBoard');
+}
+
+socket.on('boardCleared', () => {
+    ctx.clearRect(0, 0, 680, 620);
+})
+
 socket.on('cursor', (cursorInc) => {
     if (cursorInc.flag && cursorInc.needsDraw) {
         draw(cursorInc)
@@ -112,6 +120,8 @@ document.addEventListener('DOMContentLoaded', function() {
         cursorColor(opts.value)
     })
 })
+
+document.getElementById("clr").addEventListener("click", clearBoard);
 
 canvas.addEventListener("mousemove", function (e) {
     findxy('move', e)
