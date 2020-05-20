@@ -45,10 +45,12 @@ const draw = (curs) => {
 }
 
 function clearBoard() {
+
     socket.emit('clearBoard');
 }
 
-socket.on('boardCleared', () => {
+socket.on('boardCleared', (ok) => {
+    console.log('cleared!')
     ctx.clearRect(0, 0, 680, 620);
 })
 
@@ -96,7 +98,7 @@ function findxy(res, e) {
         cursor.flag = true;
         socket.emit('cursorMove', cursor);
     }
-    if (res === 'up') {
+    if (res === 'up' || res === 'out') {
         cursor.flag = false;
         socket.emit('cursorMove', cursor);
     }
@@ -115,8 +117,7 @@ function findxy(res, e) {
 document.addEventListener('DOMContentLoaded', function() {
     var opts = document.getElementById('opts');
     console.log(opts.options)
-    opts.addEventListener("change", function() { 
-        console.log(opts.value)
+    opts.addEventListener("change", function() {
         cursorColor(opts.value)
     })
 })

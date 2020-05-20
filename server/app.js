@@ -78,7 +78,7 @@ io.on('connection', (socket) => {
 	
 			cursor.flag = true;
 		}
-		if (inc.direction === 'up' ) {
+		if (inc.direction === 'up' || inc.direction === 'out') {
 			cursor.flag = false;
 			cursor.needsDraw = false;
 		}
@@ -96,7 +96,9 @@ io.on('connection', (socket) => {
 
 	socket.on("clearBoard", () => {
 		ctx.clearRect(0, 0, 680, 620);
-		socket.emit("boardCleared")
+		// why doesnt broadcast go to caller?
+		// socket.broadcast.emit("boardCleared")
+		io.sockets.emit("boardCleared")
 	});
 
 

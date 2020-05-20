@@ -1,37 +1,61 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset='utf-8'>
-    <meta name='viewport' content='width=device-width initial-scale=1.0'>
-    <title></title>
-    <link rel="stylesheet" href="/style.css" />
-    <script defer src="./bundle.js"></script>
-    <script src="/socket.io.js"></script>
-    <style>
-        * { padding: 0; margin: 0; }
-      </style>
-  </head>
-  <body>
-    <div class="header">
+
+<head>
+  <meta charset='utf-8'>
+  <meta name='viewport' content='width=device-width initial-scale=1.0'>
+  <title></title>
+  <link rel="stylesheet" href="/style.css" />
+  <script defer src="./bundle.js"></script>
+  <script src="/socket.io.js"></script>
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="header">
 
     <h1>Simple Whiteboard</h1>
     <label for="colorOpts">Choose Color</label>
     <select id="opts">
-      <option class="colorOptions" value="black" style="background:black;" id="black" >Black</option>  
-      <option class="colorOptions" value="green" style="background:green;" id="green" >Green</option>
-      <option class="colorOptions" value="blue" style="background:blue;" id="blue" >Blue</option>
-      <option class="colorOptions" value="red" style="background:red;" id="red" >Red</option>
-      <option class="colorOptions" value="yellow" style="background:yellow;" id="yellow" >Yellow</option>
-      <option class="colorOptions" value="orange" style="background:orange;" id="orange" >Orange</option>
-      <option class="colorOptions" value="eraser" style="background:whitesmoke;" id="eraser" >Eraser</option>
+      <option class="colorOptions" value="black" style="background:black;" id="black">Black</option>
+      <option class="colorOptions" value="green" style="background:green;" id="green">Green</option>
+      <option class="colorOptions" value="blue" style="background:blue;" id="blue">Blue</option>
+      <option class="colorOptions" value="red" style="background:red;" id="red">Red</option>
+      <option class="colorOptions" value="yellow" style="background:yellow;" id="yellow">Yellow</option>
+      <option class="colorOptions" value="orange" style="background:orange;" id="orange">Orange</option>
+      <option class="colorOptions" value="eraser" style="background:whitesmoke;" id="eraser">Eraser</option>
     </select>
 
-    <input type="button" value="clear" id="clr" size="30">
-      
+    <input type="button" value="clear" id="clr" size="35">
+
+    <div id="boardNum">Board # Public</div>
+
   </div>
-    <div class="main">
-          <canvas id="whiteboard" width="680" height="620"></canvas>
-       </div>
+  <div class="main">
+    <div class="boardOpts">
+      <div id="choose">
+        Go To Board:
+        <div>
+          <input type="text">
+          <input type="button" value="Go">
+        </div>
+      </div>
       
-  </body>
+      <!-- <div id="create">
+        Create a Board
+        <a id="newBoard">+</a> -->
+      </div>
+    </div>
+    <div>
+      <canvas id="whiteboard" width="680" height="620"></canvas>
+    </div>
+  </div>
+
+</body>
+
 </html>
