@@ -16,6 +16,7 @@ var cursor = {
     offsetTop: 0,
     needsDraw: false,
     color: 'black',
+    boardNo: ''
 };
 
 var chosenColor = 'black';
@@ -25,12 +26,14 @@ socket.emit('newUser');
 socket.on('init', (canv) => {
     // basically we want to draw whats in the server
     // probably collect the servers dataurl and write it to screen
+    console.log(canv);
     var img = new Image;
-    img.src = canv;
+    img.src = canv.canvas;
     img.onload = function() {
         ctx.drawImage(img, 0, 0);
     }
-    img.src = canv;
+    img.src = canv.canvas;
+    cursor.boardNo = canv.boardNo;
 
 })
 
@@ -121,6 +124,14 @@ document.addEventListener('DOMContentLoaded', function() {
         cursorColor(opts.value)
     })
 })
+
+document.getElementById("gotoBoard").addEventListener("click", function() {
+    var input = document.getElementById("boardName").value;
+    console.log(input)
+    // socket.join(input);
+    
+    socket.emit("changeRoom", input);
+}, false);
 
 document.getElementById("clr").addEventListener("click", clearBoard);
 
