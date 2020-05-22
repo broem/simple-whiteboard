@@ -26,7 +26,8 @@ socket.emit('newUser');
 socket.on('init', (canv) => {
     // basically we want to draw whats in the server
     // probably collect the servers dataurl and write it to screen
-    console.log(canv);
+    updateHeader(canv.boardNo)
+    ctx.clearRect(0, 0, 680, 620);
     var img = new Image;
     img.src = canv.canvas;
     img.onload = function() {
@@ -45,6 +46,10 @@ const draw = (curs) => {
     ctx.lineWidth = 5;
     ctx.stroke();
     ctx.closePath();
+}
+
+function updateHeader(board) {
+    document.getElementById("boardNumVal").innerHTML = board
 }
 
 function clearBoard() {
@@ -119,7 +124,6 @@ function findxy(res, e) {
 
 document.addEventListener('DOMContentLoaded', function() {
     var opts = document.getElementById('opts');
-    console.log(opts.options)
     opts.addEventListener("change", function() {
         cursorColor(opts.value)
     })
@@ -127,9 +131,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 document.getElementById("gotoBoard").addEventListener("click", function() {
     var input = document.getElementById("boardName").value;
-    console.log(input)
-    // socket.join(input);
-    
     socket.emit("changeRoom", input);
 }, false);
 

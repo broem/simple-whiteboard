@@ -8,7 +8,9 @@ const http = require('http');
 const server = http.createServer(app);
 const io = require('socket.io')(server);
 
-const { createCanvas } = require('canvas')
+const {
+	createCanvas
+} = require('canvas')
 //const canvas = createCanvas(680, 620)
 //const ctx = canvas.getContext('2d')
 
@@ -17,23 +19,23 @@ const boardState = {
 		roomNo: '',
 		cursor: cursor
 	},
-	cursors: [
-		{room: 'public',
+	cursors: [{
+		room: 'public',
 		canvas: createCanvas(680, 620),
 		ctx: null,
-		cursor: cursor} 
-	]
+		cursor: cursor
+	}]
 }
 
 var cursor = {
-    flag: false,
-    prevX: 0,
-    currX: 0,
-    prevY: 0,
-    currY: 0,
+	flag: false,
+	prevX: 0,
+	currX: 0,
+	prevY: 0,
+	currY: 0,
 	direction: '',
-    e: {},
-    offsetLeft: 0,
+	e: {},
+	offsetLeft: 0,
 	offsetTop: 0,
 	needsDraw: false,
 	color: 'black',
@@ -69,7 +71,7 @@ io.on('connection', (socket) => {
 	console.log('a user connected:', socket.id);
 
 	socket.on('newUser', () => {
-	
+
 		boardState.users[socket.id] = {
 			roomNo: 'public',
 			cursor: cursor
@@ -77,27 +79,24 @@ io.on('connection', (socket) => {
 
 		console.log(boardState.users)
 		socket.leaveAll();
-		socket.join('public', function(err) {
+		socket.join('public', function (err) {
 			console.log(err)
 		})
-		
-		console.log(socket.client.sockets[socket.id].rooms);
-		// io.in(curs.boardNo).emit('init', curs);
-		// socket.emit('init', {canvas: canvas.toDataURL(), boardNo: socket.id});
+		socket.emit('init', {canvas: boardState.cursors.filter(x => x.room === 'public')[0].canvas.toDataURL(), boardNo: 'public'});
 
 	})
 
 
 	socket.on('cursorMove', (inc) => {
 		// console.log(socket.client.sockets[socket.id].rooms);
-			cursor.color = inc.color;
-			cursor.direction = inc.direction
+		cursor.color = inc.color;
+		cursor.direction = inc.direction
 		if (inc.direction === 'down') {
 			cursor.prevX = inc.prevX;
 			cursor.prevY = inc.prevY;
 			cursor.currX = inc.currX;
 			cursor.currY = inc.currY;
-	
+
 			cursor.flag = true;
 		}
 		if (inc.direction === 'up' || inc.direction === 'out') {
@@ -124,36 +123,48 @@ io.on('connection', (socket) => {
 	});
 
 	socket.on("changeRoom", (roomNo) => {
-		socket.leaveAll();
-		boardState.users[socket.id].roomNo = roomNo;
-		socket.join(roomNo);
-		
-		// check if room exists, if not create it
+			socket.leaveAll();
+			boardState.users[socket.id].roomNo = roomNo;
+			socket.join(roomNo);
 
-		socket.emit('init', boardState.cursors.filter(x => x.room === roomNo)[0].canvas.toDataURL());;
+			// check if room exists, if not create it
+			if (boardState.cursors.filter(x => x.room === roomNo).length <= 0) {
+				createRoom(roomNo);
+			}
+			// io.in(boardState.users[socket.id].roomNo)
+			console.log('user ' + socket.id + ' is going to ' + roomNo)
+			socket.emit('init', {canvas: boardState.cursors.filter(x => x.room === roomNo)[0].canvas.toDataURL(), boardNo: roomNo});
 	});
 
-	const draw = (sock, curs) => {
-		var curCan = boardState.cursors.filter(x => x.room === boardState.users[sock.id].roomNo)[0];
-		if (!curCan.ctx) {
-			console.log('shiiiiiiiiiiiiit')
-			curCan.ctx = curCan.canvas.getContext('2d');
-		}
-		curCan.ctx.beginPath();
-		curCan.ctx.moveTo(curs.prevX, curs.prevY);
-		curCan.ctx.lineTo(curs.currX, curs.currY);
-		curCan.ctx.strokeStyle = curs.color;
-		curCan.ctx.lineWidth = 5;
-		curCan.ctx.stroke();
-		curCan.ctx.closePath();
-		io.in(sock.client.sockets[sock.id].rooms.public).emit('cursor', curs);
+const draw = (sock, curs) => {
+	var curCan = boardState.cursors.filter(x => x.room === boardState.users[sock.id].roomNo)[0];
+	if (!curCan.ctx) {
+		console.log('shiiiiiiiiiiiiit')
+		curCan.ctx = curCan.canvas.getContext('2d');
 	}
+	curCan.ctx.beginPath();
+	curCan.ctx.moveTo(curs.prevX, curs.prevY);
+	curCan.ctx.lineTo(curs.currX, curs.currY);
+	curCan.ctx.strokeStyle = curs.color;
+	curCan.ctx.lineWidth = 5;
+	curCan.ctx.stroke();
+	curCan.ctx.closePath();
+	io.in(boardState.users[sock.id].roomNo).emit('cursor', curs);
+}
 
-
-	socket.on('disconnect', function () {
-		delete boardState.users[socket.id]
-		console.log('user disconnected');
+const createRoom = (roomNo) => {
+	boardState.cursors.push({
+		room: roomNo,
+		canvas: createCanvas(680, 620),
+		ctx: null,
+		cursor: cursor
 	});
+}
+
+socket.on('disconnect', function () {
+	delete boardState.users[socket.id]
+	console.log('user disconnected');
+});
 });
 
 server.listen(PORT, () => {
