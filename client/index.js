@@ -4,13 +4,15 @@ var interval = 1000 / 60;
 
 const socket = io();
 
+initialize();
+
 var cursor = {
     flag: false,
     prevX: 10,
     currX: 10,
     prevY: 110,
     currY: 110,
-	direction: '',
+    direction: '',
     e: {},
     offsetLeft: 0,
     offsetTop: 0,
@@ -19,18 +21,28 @@ var cursor = {
     boardNo: ''
 };
 
+
+
 var chosenColor = 'black';
 
-socket.emit('newUser');
+window.addEventListener('DOMContentLoaded', function () {
+
+    var canvX = document.getElementById('whiteboard').width;
+    var canvY = document.getElementById('whiteboard').height;
+    socket.emit('newUser', {
+        x: canvX,
+        y: canvY
+    });
+})
 
 socket.on('init', (canv) => {
     // basically we want to draw whats in the server
     // probably collect the servers dataurl and write it to screen
     updateHeader(canv.boardNo)
-    ctx.clearRect(0, 0, 680, 620);
+    ctx.clearRect(0, 0, canvas.height, canvas.width);
     var img = new Image;
     img.src = canv.canvas;
-    img.onload = function() {
+    img.onload = function () {
         ctx.drawImage(img, 0, 0);
     }
     img.src = canv.canvas;
@@ -39,6 +51,8 @@ socket.on('init', (canv) => {
 })
 
 const draw = (curs) => {
+    var canvX = document.getElementById('whiteboard').width;
+    var canvY = document.getElementById('whiteboard').height;
     ctx.beginPath();
     ctx.moveTo(curs.prevX, curs.prevY);
     ctx.lineTo(curs.currX, curs.currY);
@@ -46,6 +60,11 @@ const draw = (curs) => {
     ctx.lineWidth = 5;
     ctx.stroke();
     ctx.closePath();
+}
+
+function initialize() {
+    // canvas.width = window.innerWidth;
+    // canvas.height = window.innerHeight;
 }
 
 function updateHeader(board) {
@@ -59,7 +78,7 @@ function clearBoard() {
 
 socket.on('boardCleared', (ok) => {
     console.log('cleared!')
-    ctx.clearRect(0, 0, 680, 620);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 })
 
 socket.on('cursor', (cursorInc) => {
@@ -120,16 +139,21 @@ function findxy(res, e) {
         }
     }
 }
+window.onload = window.onresize = function () {
 
+    canvas = document.getElementById('whiteboard');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     var opts = document.getElementById('opts');
-    opts.addEventListener("change", function() {
+    opts.addEventListener("change", function () {
         cursorColor(opts.value)
     })
 })
 
-document.getElementById("gotoBoard").addEventListener("click", function() {
+document.getElementById("gotoBoard").addEventListener("click", function () {
     var input = document.getElementById("boardName").value;
     socket.emit("changeRoom", input);
 }, false);

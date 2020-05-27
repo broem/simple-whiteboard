@@ -3,17 +3,22 @@ body {
   background-color: #4f545c;
 }
 
+html, body {
+  width: 100%;
+    height: 100%;
+    margin: 0;
+    padding:0;
+    /* overflow:hidden; */
+}
+
 .header {
   background-color: #2f3136;
     color: white;
     padding-left: 25px;
-    padding-top: 15px;
+    /* padding-top: 15px; */
     padding-bottom: 10px;
 }
 
-.main {
-  background-color: #4f545c;
-}
 
 .boardOpts {
   padding-left: 25px;
@@ -25,8 +30,11 @@ body {
   padding-bottom: 10px;
 }
 
-#create {
-  
+#whiteboard {
+  /* height: 100%;
+  width: 100%; */
+  /* position:fixed; */
+
 }
 
 #newBoard {
@@ -41,10 +49,9 @@ body {
 
 #whiteboard {
   background: whitesmoke; 
-  display: block; 
-  margin: 0 auto;
-  margin-top: 25px;
+  /* display: block; 
+  margin: 0;
   border: 1px solid black;
-  border-radius: 2%;
-  padding-left: -25px;
+  border-radius: 2%; 
+  padding-left: -25px; */
 }

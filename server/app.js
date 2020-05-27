@@ -14,14 +14,17 @@ const {
 //const canvas = createCanvas(680, 620)
 //const ctx = canvas.getContext('2d')
 
+const maxX = 3000;
+const maxY = 2000;
+
 const boardState = {
 	users: {
 		roomNo: '',
 		cursor: cursor
 	},
 	cursors: [{
-		room: 'public',
-		canvas: createCanvas(680, 620),
+		room: 'public', //default here
+		canvas: createCanvas(2000, 1000),
 		ctx: null,
 		cursor: cursor
 	}]
@@ -42,6 +45,8 @@ var cursor = {
 	boardNo: ''
 };
 
+var urlRoom = 'public'
+
 app.use(morgan('dev'));
 
 app.use(bodyParser.json());
@@ -51,6 +56,11 @@ app.use(bodyParser.urlencoded({
 
 // Static middleware
 app.use(express.static(path.join(__dirname, '..', 'public')));
+
+app.get('/room/:id', (req, res, next) => {
+	urlRoom = req.params.id;
+	res.sendFile(path.join(__dirname, '..', 'index.html'));
+});
 
 app.get('/*', (req, res, next) => {
 	res.sendFile(path.join(__dirname, '..', 'index.html'));
@@ -67,22 +77,30 @@ app.use((err, req, res, next) => {
 	res.send(err.message || 'Internal server error');
 });
 
+// TODO: scale client x,y depending on screen size
+
 io.on('connection', (socket) => {
 	console.log('a user connected:', socket.id);
 
-	socket.on('newUser', () => {
-
+	socket.on('newUser', (inc) => {
+		// grab the screen size
+		console.log(inc)
 		boardState.users[socket.id] = {
-			roomNo: 'public',
+			roomNo: urlRoom,
 			cursor: cursor
 		}
 
 		console.log(boardState.users)
 		socket.leaveAll();
-		socket.join('public', function (err) {
+		socket.join(urlRoom, function (err) {
 			console.log(err)
 		})
-		socket.emit('init', {canvas: boardState.cursors.filter(x => x.room === 'public')[0].canvas.toDataURL(), boardNo: 'public'});
+
+		if(!boardState.cursors.filter(x => x.room === urlRoom).length <= 0) {
+			createRoom(urlRoom);
+		}
+
+		socket.emit('init', {canvas: boardState.cursors.filter(x => x.room === urlRoom)[0].canvas.toDataURL(), boardNo: urlRoom});
 
 	})
 
@@ -116,30 +134,30 @@ io.on('connection', (socket) => {
 	});
 
 	socket.on("clearBoard", () => {
-		ctx.clearRect(0, 0, 680, 620);
+		var board = boardState.cursors.filter(x => x.room === boardState.users[socket.id].roomNo)[0];
+		board.ctx.clearRect(0, 0, board.canvas.width, board.canvas.height);
 		// why doesnt broadcast go to caller?
 		// socket.broadcast.emit("boardCleared")
 		io.sockets.emit("boardCleared")
 	});
 
 	socket.on("changeRoom", (roomNo) => {
-			socket.leaveAll();
-			boardState.users[socket.id].roomNo = roomNo;
-			socket.join(roomNo);
-
-			// check if room exists, if not create it
-			if (boardState.cursors.filter(x => x.room === roomNo).length <= 0) {
-				createRoom(roomNo);
-			}
-			// io.in(boardState.users[socket.id].roomNo)
-			console.log('user ' + socket.id + ' is going to ' + roomNo)
-			socket.emit('init', {canvas: boardState.cursors.filter(x => x.room === roomNo)[0].canvas.toDataURL(), boardNo: roomNo});
+		sock.leaveAll();
+		boardState.users[sock.id].roomNo = roomNo;
+		sock.join(roomNo);
+	
+		// check if room exists, if not create it
+		if (boardState.cursors.filter(x => x.room === roomNo).length <= 0) {
+			createRoom(roomNo);
+		}
+		// io.in(boardState.users[socket.id].roomNo)
+		console.log('user ' + socket.id + ' is going to ' + roomNo)
+		socket.emit('init', {canvas: boardState.cursors.filter(x => x.room === roomNo)[0].canvas.toDataURL(), boardNo: roomNo});
 	});
 
 const draw = (sock, curs) => {
 	var curCan = boardState.cursors.filter(x => x.room === boardState.users[sock.id].roomNo)[0];
 	if (!curCan.ctx) {
-		console.log('shiiiiiiiiiiiiit')
 		curCan.ctx = curCan.canvas.getContext('2d');
 	}
 	curCan.ctx.beginPath();
