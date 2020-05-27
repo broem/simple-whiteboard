@@ -116,11 +116,12 @@ function cursorColor(obj) {
 function findxy(res, e) {
     cursor.direction = res;
     cursor.e = e;
+    var boundRect = canvas.getBoundingClientRect();
     if (res === 'down') {
         cursor.prevX = cursor.currX;
         cursor.prevY = cursor.currY;
-        cursor.currX = (e.clientX - canvas.offsetLeft);
-        cursor.currY = (e.clientY - canvas.offsetTop);
+        cursor.currX = (e.clientX - boundRect.left);
+        cursor.currY = (e.clientY - boundRect.top);
 
         cursor.flag = true;
         socket.emit('cursorMove', cursor);
@@ -133,8 +134,8 @@ function findxy(res, e) {
         if (cursor.flag) {
             cursor.prevX = cursor.currX;
             cursor.prevY = cursor.currY;
-            cursor.currX = e.clientX - canvas.offsetLeft;
-            cursor.currY = e.clientY - canvas.offsetTop;
+            cursor.currX = e.clientX - boundRect.left;
+            cursor.currY = e.clientY - boundRect.top;
             socket.emit('cursorMove', cursor);
         }
     }

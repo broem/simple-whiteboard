@@ -26,15 +26,17 @@ html, body {
   color: white;
 }
 
-#choose {
-  padding-bottom: 10px;
+.main {
+  height: 800px;
+  width: 1000px;
+  margin: auto;
+  display: block;
+  margin: 0 auto;
+  overflow: scroll;
 }
 
-#whiteboard {
-  /* height: 100%;
-  width: 100%; */
-  /* position:fixed; */
-
+#choose {
+  padding-bottom: 10px;
 }
 
 #newBoard {
@@ -49,9 +51,9 @@ html, body {
 
 #whiteboard {
   background: whitesmoke; 
-  /* display: block; 
-  margin: 0;
+  /* /* display: block;  */
+  /* margin: 0; */
   border: 1px solid black;
   border-radius: 2%; 
-  padding-left: -25px; */
+  /* padding-left: -25px; */ 
 }
