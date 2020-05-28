@@ -143,7 +143,7 @@ io.on('connection', (socket) => {
 		board.ctx.clearRect(0, 0, board.canvas.width, board.canvas.height);
 		// why doesnt broadcast go to caller?
 		// socket.broadcast.emit("boardCleared")
-		io.sockets.emit("boardCleared")
+		socket.emit("boardCleared")
 	});
 
 	socket.on("changeRoom", (roomNo) => {
