@@ -39,7 +39,7 @@ socket.on('init', (canv) => {
     // basically we want to draw whats in the server
     // probably collect the servers dataurl and write it to screen
     updateHeader(canv.boardNo)
-    ctx.clearRect(0, 0, canvas.height, canvas.width);
+    ctx.clearRect(0, 0, 2000, 1000);
     var img = new Image;
     img.src = canv.canvas;
     img.onload = function () {
