@@ -45,7 +45,7 @@ var cursor = {
 	boardNo: ''
 };
 
-var urlRoom = 'public'
+var urlRoom = 'public';
 
 app.use(morgan('dev'));
 
@@ -58,7 +58,7 @@ app.use(bodyParser.urlencoded({
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
 app.get('/room/:id', (req, res, next) => {
-	urlRoom = req.params.id;
+	// urlRoom = req.params.id;
 	res.sendFile(path.join(__dirname, '..', 'index.html'));
 });
 
@@ -82,25 +82,30 @@ io.on('connection', (socket) => {
 	console.log('a user connected:', socket.id);
 
 	socket.on('newUser', (inc) => {
+		var boardLoc = urlRoom
+		console.log(inc)
+		if(inc.url.indexOf("/room/") !== -1) {
+			boardLoc = inc.url.split("/").pop();
+		}
 		// grab the screen size
 		boardState.users[socket.id] = {
-			roomNo: urlRoom,
+			roomNo: boardLoc,
 			cursor: cursor
 		}
 
 		console.log(boardState.users)
 		socket.leaveAll();
-		socket.join(urlRoom, function (err) {
+		socket.join(boardLoc, function (err) {
 			console.log(err)
 		})
 
-		if(boardState.cursors.filter(x => x.room === urlRoom).length <= 0 || 
-			!boardState.cursors.filter(x => x.room === urlRoom)[0].canvas ) {
-			console.log('creating room: ' + urlRoom)
-			createRoom(urlRoom);
+		if(boardState.cursors.filter(x => x.room === boardLoc).length <= 0 || 
+			!boardState.cursors.filter(x => x.room === boardLoc)[0].canvas ) {
+			console.log('creating room: ' + boardLoc)
+			createRoom(boardLoc);
 		}
 
-		socket.emit('init', {canvas: boardState.cursors.filter(x => x.room === urlRoom)[0].canvas.toDataURL(), boardNo: urlRoom});
+		socket.emit('init', {canvas: boardState.cursors.filter(x => x.room === boardLoc)[0].canvas.toDataURL(), boardNo: boardLoc});
 
 	})
 

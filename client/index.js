@@ -30,7 +30,8 @@ window.addEventListener('DOMContentLoaded', function () {
     var canvY = document.getElementById('whiteboard').height;
     socket.emit('newUser', {
         x: canvX,
-        y: canvY
+        y: canvY,
+        url: window.location.href
     });
 })
 
