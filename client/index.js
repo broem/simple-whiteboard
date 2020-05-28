@@ -26,7 +26,6 @@ var cursor = {
 var chosenColor = 'black';
 
 window.addEventListener('DOMContentLoaded', function () {
-
     var canvX = document.getElementById('whiteboard').width;
     var canvY = document.getElementById('whiteboard').height;
     socket.emit('newUser', {
@@ -68,6 +67,7 @@ function initialize() {
 }
 
 function updateHeader(board) {
+    history.replaceState(null, "Bleach Board - A Simple Interactive Whiteboard - Room: " + board, "/room/" + board)
     document.getElementById("boardNumVal").innerHTML = board
 }
 
@@ -77,7 +77,6 @@ function clearBoard() {
 }
 
 socket.on('boardCleared', (ok) => {
-    console.log('cleared!')
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 })
 

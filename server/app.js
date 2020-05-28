@@ -23,7 +23,7 @@ const boardState = {
 		cursor: cursor
 	},
 	cursors: [{
-		room: 'public', //default here
+		room: urlRoom, //default here
 		canvas: createCanvas(2000, 1000),
 		ctx: null,
 		cursor: cursor
@@ -77,14 +77,12 @@ app.use((err, req, res, next) => {
 	res.send(err.message || 'Internal server error');
 });
 
-// TODO: scale client x,y depending on screen size
 
 io.on('connection', (socket) => {
 	console.log('a user connected:', socket.id);
 
 	socket.on('newUser', (inc) => {
 		// grab the screen size
-		console.log(inc)
 		boardState.users[socket.id] = {
 			roomNo: urlRoom,
 			cursor: cursor
@@ -96,7 +94,9 @@ io.on('connection', (socket) => {
 			console.log(err)
 		})
 
-		if(!boardState.cursors.filter(x => x.room === urlRoom).length <= 0) {
+		if(boardState.cursors.filter(x => x.room === urlRoom).length <= 0 || 
+			!boardState.cursors.filter(x => x.room === urlRoom)[0].canvas ) {
+			console.log('creating room: ' + urlRoom)
 			createRoom(urlRoom);
 		}
 
@@ -142,9 +142,9 @@ io.on('connection', (socket) => {
 	});
 
 	socket.on("changeRoom", (roomNo) => {
-		sock.leaveAll();
-		boardState.users[sock.id].roomNo = roomNo;
-		sock.join(roomNo);
+		socket.leaveAll();
+		boardState.users[socket.id].roomNo = roomNo;
+		socket.join(roomNo);
 	
 		// check if room exists, if not create it
 		if (boardState.cursors.filter(x => x.room === roomNo).length <= 0) {
@@ -173,7 +173,7 @@ const draw = (sock, curs) => {
 const createRoom = (roomNo) => {
 	boardState.cursors.push({
 		room: roomNo,
-		canvas: createCanvas(680, 620),
+		canvas: createCanvas(2000, 1000),
 		ctx: null,
 		cursor: cursor
 	});
