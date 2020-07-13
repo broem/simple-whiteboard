@@ -1,22 +1,18 @@
 const express = require('express');
 const path = require('path');
-const fs = require('fs');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const app = express();
-const PORT = process.env.PORT || 3000;
-const http = require('https');
-const server = http.createServer(
-	{key: fs.readFileSync(path.resolve(process.env.BB_KEY)), 
-	cert : fs.readFileSync(path.resolve(process.env.BB_CERT))},
-	app);
+const PORT = 3000;
+const http = require('http');
+const server = http.createServer(app);
 const io = require('socket.io')(server);
-
-console.log(process.env)
 
 const {
 	createCanvas
 } = require('canvas')
+//const canvas = createCanvas(680, 620)
+//const ctx = canvas.getContext('2d')
 
 const maxX = 3000;
 const maxY = 2000;

@@ -2,7 +2,7 @@ var canvas = document.getElementById('whiteboard');
 var ctx = canvas.getContext('2d');
 var interval = 1000 / 60;
 
-const socket = io.connect('https://localhost:3000', {transports: ['websocket'], secure: true});
+const socket = io();
 
 initialize();
 
