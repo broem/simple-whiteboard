@@ -25,7 +25,7 @@ var cursor = {
 
 var chosenColor = 'black';
 
-window.addEventListener('DOMContentLoaded', function () {
+window.addEventListener('DOMContentLoaded', function() {
     var canvX = document.getElementById('whiteboard').width;
     var canvY = document.getElementById('whiteboard').height;
     socket.emit('newUser', {
@@ -35,6 +35,20 @@ window.addEventListener('DOMContentLoaded', function () {
     });
 })
 
+window.addEventListener('resize', resizeCanvas, false);
+
+function resizeCanvas() {
+    if (window.orientation !== undefined) // if mobile
+    {
+        canvas.width = document.documentElement.clientWidth;
+        canvas.height = document.documentElement.clientHeight;
+    } else { // if pc
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+}
+resizeCanvas();
+
 socket.on('init', (canv) => {
     // basically we want to draw whats in the server
     // probably collect the servers dataurl and write it to screen
@@ -42,7 +56,7 @@ socket.on('init', (canv) => {
     ctx.clearRect(0, 0, 2000, 1000);
     var img = new Image;
     img.src = canv.canvas;
-    img.onload = function () {
+    img.onload = function() {
         ctx.drawImage(img, 0, 0);
     }
     img.src = canv.canvas;
@@ -140,36 +154,36 @@ function findxy(res, e) {
         }
     }
 }
-window.onload = window.onresize = function () {
+window.onload = window.onresize = function() {
 
-    canvas = document.getElementById('whiteboard');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    // canvas = document.getElementById('whiteboard');
+    // canvas.width = window.innerWidth;
+    // canvas.height = window.innerHeight;
 }
 
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function() {
     var opts = document.getElementById('opts');
-    opts.addEventListener("change", function () {
+    opts.addEventListener("change", function() {
         cursorColor(opts.value)
     })
 })
 
-document.getElementById("gotoBoard").addEventListener("click", function () {
+document.getElementById("gotoBoard").addEventListener("click", function() {
     var input = document.getElementById("boardName").value;
     socket.emit("changeRoom", input);
 }, false);
 
 document.getElementById("clr").addEventListener("click", clearBoard);
 
-canvas.addEventListener("mousemove", function (e) {
+canvas.addEventListener("mousemove", function(e) {
     findxy('move', e)
 }, false);
-canvas.addEventListener("mousedown", function (e) {
+canvas.addEventListener("mousedown", function(e) {
     findxy('down', e)
 }, false);
-canvas.addEventListener("mouseup", function (e) {
+canvas.addEventListener("mouseup", function(e) {
     findxy('up', e)
 }, false);
-canvas.addEventListener("mouseout", function (e) {
+canvas.addEventListener("mouseout", function(e) {
     findxy('out', e)
 }, false);
