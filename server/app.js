@@ -81,62 +81,71 @@ app.use((err, req, res, next) => {
 io.on('connection', (socket) => {
 	console.log('a user connected:', socket.id);
 
-	socket.on('newUser', (inc) => {
-		var boardLoc = urlRoom
-		console.log(inc)
-		if(inc.url.indexOf("/room/") !== -1) {
-			boardLoc = inc.url.split("/").pop();
-		}
-		// grab the screen size
-		boardState.users[socket.id] = {
-			roomNo: boardLoc,
-			cursor: cursor
-		}
+	socket.on("newUser", (inc) => {
+    var boardLoc = urlRoom;
+    console.log(inc);
+    if (inc.url.indexOf("/room/") !== -1) {
+      boardLoc = inc.url.split("/").pop();
+    }
+    // grab the screen size
+    boardState.users[socket.id] = {
+      roomNo: boardLoc,
+      cursor: cursor,
+    };
 
-		console.log(boardState.users)
-		socket.leaveAll();
-		socket.join(boardLoc, function (err) {
-			console.log(err)
-		})
+    console.log(boardState.users);
+    socket.leaveAll();
+    socket.join(boardLoc, function (err) {
+      console.log(err);
+    });
 
-		if(boardState.cursors.filter(x => x.room === boardLoc).length <= 0 || 
-			!boardState.cursors.filter(x => x.room === boardLoc)[0].canvas ) {
-			console.log('creating room: ' + boardLoc)
-			createRoom(boardLoc);
-		}
+    console.log(boardState);
 
-		socket.emit('init', {canvas: boardState.cursors.filter(x => x.room === boardLoc)[0].canvas.toDataURL(), boardNo: boardLoc});
+    if (
+      boardState.cursors.filter((x) => x.room === boardLoc).length <= 0 ||
+      !boardState.cursors.filter((x) => x.room === boardLoc)[0].canvas
+    ) {
+      console.log("creating room: " + boardLoc);
+      createRoom(boardLoc);
+    }
 
-	})
+    // send the user the canvas
+    console.log("sending init");
+    var tempCanvas = boardState.cursors.filter((x) => x.room === boardLoc)[0]
+      .canvas;
+    console.log(tempCanvas);
+    socket.emit("init", {
+      canvas: tempCanvas.toDataURL(),
+      boardNo: boardLoc,
+    });
+  });
 
+  socket.on("cursorMove", (inc) => {
+    cursor.color = inc.color;
+    cursor.direction = inc.direction;
+    if (inc.direction === "down") {
+      cursor.prevX = inc.prevX;
+      cursor.prevY = inc.prevY;
+      cursor.currX = inc.currX;
+      cursor.currY = inc.currY;
 
-	socket.on('cursorMove', (inc) => {
-		// console.log(socket.client.sockets[socket.id].rooms);
-		cursor.color = inc.color;
-		cursor.direction = inc.direction
-		if (inc.direction === 'down') {
-			cursor.prevX = inc.prevX;
-			cursor.prevY = inc.prevY;
-			cursor.currX = inc.currX;
-			cursor.currY = inc.currY;
-
-			cursor.flag = true;
-		}
-		if (inc.direction === 'up' || inc.direction === 'out') {
-			cursor.flag = false;
-			cursor.needsDraw = false;
-		}
-		if (inc.direction === 'move') {
-			if (cursor.flag) {
-				cursor.needsDraw = true;
-				cursor.prevX = inc.prevX;
-				cursor.prevY = inc.prevY;
-				cursor.currX = inc.currX;
-				cursor.currY = inc.currY;
-				draw(socket, cursor);
-			}
-		}
-	});
+      cursor.flag = true;
+    }
+    if (inc.direction === "up" || inc.direction === "out") {
+      cursor.flag = false;
+      cursor.needsDraw = false;
+    }
+    if (inc.direction === "move") {
+      if (cursor.flag) {
+        cursor.needsDraw = true;
+        cursor.prevX = inc.prevX;
+        cursor.prevY = inc.prevY;
+        cursor.currX = inc.currX;
+        cursor.currY = inc.currY;
+        draw(socket, cursor);
+      }
+    }
+  });
 
 	socket.on("clearBoard", () => {
 		var board = boardState.cursors.filter(x => x.room === boardState.users[socket.id].roomNo)[0];
