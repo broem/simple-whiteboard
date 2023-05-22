@@ -11,8 +11,12 @@
     "socket.io": "^2.4.0"
   },
   "scripts": {
+    "preinstall": "npx npm-force-resolutions",
     "start": "npx webpack -w",
     "server": "npx nodemon server/app.js --ignore public"
+  },
+  "resolutions": {
+    "glob-parent": "^6.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.9.6",
